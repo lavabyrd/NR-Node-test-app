@@ -1,3 +1,5 @@
+var newrelic = require('newrelic');
+
 /**
  * Module dependencies.
  */
@@ -43,8 +45,15 @@ const passportConfig = require('./config/passport');
 /**
  * Create Express server.
  */
-const app = express();
+// const app = express();
 
+var app = require('express')();
+    // in express, this lets you call newrelic from within a template
+    app.locals.newrelic = newrelic;
+
+    app.get('/user/:id', function (req, res) {
+      res.render('user');
+    });
 /**
  * Connect to MongoDB.
  */
@@ -224,6 +233,9 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
+
+
+
 app.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env')); 
   console.log('  Press CTRL-C to stop\n');

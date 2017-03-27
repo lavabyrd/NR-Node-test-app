@@ -66,6 +66,41 @@ mongoose.connection.on('error', (err) => {
 });
 
 /**
+* Errors
+*/
+
+
+app.get('/mark_test',
+  function checkIfPaidSubscriber (req, res, next) {
+    if (!req.user.hasPaid) {
+      // continue handling this request
+      next('route')
+    }
+  }, function getPaidContent (req, res, next) {
+    PaidContent.find(function (err, doc) {
+      if (err) return next(err)
+      res.status(500)
+      res.json(doc)
+    })
+  })
+
+  app.get('/mark_test2',
+    function somethingElse (req, res, next) {
+      if (!req.user.hasPaid) {
+        // continue handling this request
+        next('route')
+      }
+    }, function errorThrown (req, res, next) {
+      whoWhat.find(function (err, doc) {
+        if (err) return next(err)
+        res.status(302  )
+        res.json(doc)
+      })
+    })
+
+
+
+/**
  * Express configuration.
  */
 app.set('port', process.env.PORT || 3000);

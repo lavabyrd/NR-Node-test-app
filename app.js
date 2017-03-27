@@ -70,7 +70,7 @@ mongoose.connection.on('error', (err) => {
 */
 
 
-app.get('/mark_test',
+app.get('/raised_error1',
   function checkIfPaidSubscriber (req, res, next) {
     if (!req.user.hasPaid) {
       // continue handling this request
@@ -84,7 +84,7 @@ app.get('/mark_test',
     })
   })
 
-  app.get('/mark_test2',
+  app.get('/raised_error2',
     function somethingElse (req, res, next) {
       if (!req.user.hasPaid) {
         // continue handling this request
@@ -93,13 +93,20 @@ app.get('/mark_test',
     }, function errorThrown (req, res, next) {
       whoWhat.find(function (err, doc) {
         if (err) return next(err)
-        res.status(302  )
+        res.status(405)
         res.json(doc)
       })
     })
 
+    app.get('/raised_error3',function(req,res,next){
+      res.status(401)
+      next(new Error('Something went wrong :-('));
+    });
 
-
+    app.get('/raised_error4', function(req,res,next){
+    res.status(403)
+    next(new Error('Something went 302! :raccoon:'));
+  });
 /**
  * Express configuration.
  */
@@ -263,7 +270,7 @@ app.get('/auth/pinterest/callback', passport.authorize('pinterest', { failureRed
 /**
  * Error Handler.
  */
-app.use(errorHandler());
+// app.use(errorHandler());
 
 /**
  * Start Express server.
